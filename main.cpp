@@ -48,7 +48,7 @@ int main() {
         decltype(auto) content = req.params.find("content");
         Post post{-1, content};
         storage.insert(post);
-    })
+    });
 
     svr.listen("localhost", 3000);
 }
