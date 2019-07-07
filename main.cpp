@@ -30,7 +30,7 @@ int main() {
     auto storage = make_storage("db.sqlite",
                             make_table("posts",
                                        make_column("id", &Post::id, autoincrement(), primary_key()),
-                                       make_column("content", &Post::content));
+                                       make_column("content", &Post::content)));
 
     const std::string html = load_static("static/index.html"); 
 
@@ -44,14 +44,14 @@ int main() {
         res.set_content(js, "text/javascript");
     });
 
-    svr.Post("/api/posts", [&](const httplib::Request, &req, httplib::Response& res){
+    svr.Post("/api/posts", [&](const httplib::Request &req, httplib::Response& res){
         decltype(auto) content = req.params.find("content");
-        Post post{-1, content};
+        Post post{-1, content->second};
         storage.insert(post);
         res.set_content("OK", "text/plain");
     });
 
-    svr.Get("/api/posts", [&](const httplib::Request, &req, httplib::Response& res){
+    svr.Get("/api/posts", [&](const httplib::Request &req, httplib::Response& res){
         auto allPosts = storage.get_all<Post>();
         std::string response = "";
 
@@ -59,7 +59,7 @@ int main() {
             response += storage.dump(post);
 
         res.set_content(response.c_str(), "text/json");
-    })
+    });
 
     svr.listen("localhost", 3000);
 }
