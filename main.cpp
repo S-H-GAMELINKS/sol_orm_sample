@@ -48,6 +48,7 @@ int main() {
         decltype(auto) content = req.params.find("content");
         Post post{-1, content};
         storage.insert(post);
+        res.set_content("OK", "text/plain");
     });
 
     svr.Get("/api/posts", [&](const httplib::Request, &req, httplib::Response& res){
