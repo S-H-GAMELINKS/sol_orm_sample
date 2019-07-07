@@ -50,5 +50,15 @@ int main() {
         storage.insert(post);
     });
 
+    svr.Get("/api/posts", [&](const httplib::Request, &req, httplib::Response& res){
+        auto allPosts = storage.get_all<Post>();
+        std::string response = "";
+
+        for(auto&& post : allPosts)
+            response += storage.dump(post);
+
+        res.set_content(response.c_str(), "text/json");
+    })
+
     svr.listen("localhost", 3000);
 }
